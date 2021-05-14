@@ -26,12 +26,19 @@ class LogService:
     """
     Returns the corresponding log with basic information about it
     """
-    def getLog(self, log_name):
+    def getLogInfo(self, log_name):
         file_dir = os.path.join(EVENT_LOG_PATH, log_name)
         xes_log = xes_importer_factory.apply(file_dir)
         no_traces = len(xes_log)
         no_events = sum([len(trace) for trace in xes_log])
         return LogDto(log_name, no_events, no_traces)
+
+    """
+    Returns the log file
+    """
+    def getLogFile(self, log_name):
+        file_dir = os.path.join(EVENT_LOG_PATH, log_name)
+        return file_dir
 
     """
     Deletes an event log from the existing list of event logs

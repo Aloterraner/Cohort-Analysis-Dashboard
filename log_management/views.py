@@ -1,4 +1,4 @@
-from log_management.models import SelectedLog
+from core.models import SelectedLog
 from log_management.services.log_service import LogService
 from django.shortcuts import redirect, render
 from django.http import HttpResponse, HttpResponseRedirect
@@ -64,12 +64,20 @@ def set_log(request, logname):
 
     if request.method == 'POST':
         name = request.POST['logName']
-        attribute = request.POST['attribute']
-        print("Selected attribute: " + attribute)
-        prop = request.POST['property']
-        print("Selected property: " + prop)
-        # name = request.POST['classifier']
-        selected_log = SelectedLog(name, "case_id", "case_concept_name")
+        case_id = request.POST['caseId']
+        case_concept_name = request.POST['caseConcept']
+        
+        selected_log = SelectedLog(name, case_id, case_concept_name)
+        
+        selected_log.log_type = request.POST['inlineRadioOptions']
+        if(selected_log.log_type == 'noninterval'):
+            selected_log.timestamp = request.POST['timestamp']
+        elif(selected_log.log_type == 'lifecycle'):
+            selected_log.lifecycle = request.POST['lifecycle']
+        elif(selected_log.log_type == 'timestamp'):
+            selected_log.start_timestamp = request.POST['startTimestamp']
+            selected_log.end_timestamp = request.POST['endTimestamp']
+
         request.session['current_log'] = selected_log.__dict__
         return redirect('/logmanagement/')
 
@@ -79,10 +87,12 @@ def set_log(request, logname):
 
 
 def get_log_info(request):
-    log_service = LogService()
+    # TODO: Allow user checking log info prior to selecting a log
+    # log_service = LogService()
 
-    log_name = request.GET.get('log_name', None)
-    data = log_service.getLogInfo(log_name).__dict__
+    # log_name = request.GET.get('log_name', None)
+    # data = log_service.getLogInfo(log_name).__dict__
+    data = {"todo":"todo"}
     return JsonResponse(data)
 
 def log_response(request, log):

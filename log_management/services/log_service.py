@@ -28,10 +28,12 @@ class LogService:
     """
     def getLogInfo(self, log_name):
         file_dir = os.path.join(EVENT_LOG_PATH, log_name)
+
         xes_log = xes_importer_factory.apply(file_dir)
-        no_traces = len(xes_log)
-        no_events = sum([len(trace) for trace in xes_log])
-        return LogDto(log_name, no_events, no_traces)
+        attributes = list(xes_log.attributes.keys())
+        properties = list(xes_log.properties.keys())
+        classifiers = list(xes_log._classifiers.keys())
+        return LogDto(log_name, attributes, properties, classifiers)
 
     """
     Returns the log file
@@ -51,7 +53,8 @@ class LogService:
         # return eventlogs
 
 class LogDto():
-    def __init__(self, log_name, no_events, no_traces):
+    def __init__(self, log_name, attributes, properties, classifiers):
         self.log_name = log_name
-        self.no_events = no_events
-        self.no_traces = no_traces
+        self.attributes = attributes
+        self.properties = properties
+        self.classifiers = classifiers

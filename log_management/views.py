@@ -1,3 +1,4 @@
+from log_management.models import SelectedLog
 from log_management.services.log_service import LogService
 from django.shortcuts import redirect, render
 from django.http import HttpResponse, HttpResponseRedirect
@@ -46,19 +47,35 @@ def index(request):
         elif "setButton" in request.POST:
             if "log_list" not in request.POST:
                 return HttpResponseRedirect(request.path_info)
-
             filename = request.POST["log_list"]
-            request.session['current_log'] = filename
+            return redirect('setlog/' + filename + '/')
 
     eventlog_list = log_service.getAll()
     my_dict = {"eventlog_list": eventlog_list}
     if(request.session['current_log'] != None):
         try:
-            log = log_service.getLogInfo(request.session['current_log'])
-            my_dict["selected_log_info"] = log
+            my_dict["selected_log_info"] = request.session['current_log']
         except Exception as err:
             print("Oops!  Fetching the log failed: {0}".format(err))
     return render(request, LOGMANAGEMENT_DIR + '/index.html', context=my_dict)
+
+def set_log(request, logname):
+    log_service = LogService()
+
+    if request.method == 'POST':
+        name = request.POST['logName']
+        attribute = request.POST['attribute']
+        print("Selected attribute: " + attribute)
+        prop = request.POST['property']
+        print("Selected property: " + prop)
+        # name = request.POST['classifier']
+        selected_log = SelectedLog(name, "case_id", "case_concept_name")
+        request.session['current_log'] = selected_log.__dict__
+        return redirect('/logmanagement/')
+
+
+    data = log_service.getLogInfo(logname).__dict__
+    return render(request, LOGMANAGEMENT_DIR + '/set_log.html', context=data)
 
 
 def get_log_info(request):

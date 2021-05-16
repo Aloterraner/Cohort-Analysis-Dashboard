@@ -1,0 +1,74 @@
+{% extends 'base.html' %} {% block content %}
+<ul class="nav nav-tabs" id="myTab" role="tablist">
+  <li class="nav-item">
+    <a
+      class="nav-link active"
+      id="setlog-tab"
+      data-toggle="tab"
+      href="#setlog"
+      role="tab"
+      aria-controls="eventlogs"
+      aria-selected="true"
+      >Log Selection</a
+    >
+  </li>
+</ul>
+<div class="tab-content" id="myTabContent">
+    <div class="tab-pane fade show active" id="setlog" role="tabpanel" aria-labelledby="setlog-tab">
+  
+      <div class="container-fluid">
+          <h3 class="mt-4" style="color:#00529F;">Select your log attributes below..</h3>
+          <br>
+          <div class="row">
+            <div class=" col-sm-6 col-md-7 col-lg-8">
+                <form  name="setlogform" action="" method = "POST">
+                  {% csrf_token %}
+                  <div class="form-group row">
+                    <label for="logName" class="col-sm-2 col-form-label">Log Name:</label>
+                    <div class="col-sm-10">
+                      <input name="logName" type="text" readonly class="form-control-plaintext" id="logName" value="{{log_name}}">
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <label for="attributes" class="col-sm-2 col-form-label">Attributes</label>
+                    <div class="col-sm-10">
+                      <select name="attribute" class="custom-select custom-select-md mb-3">
+                        <option selected disabled>Column Name</option>
+                        {% for attribute in attributes %}
+                            <option value="{{attribute}}">{{attribute}}</option>
+                        {% endfor %}
+                      </select>
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <label for="properties" class="col-sm-2 col-form-label">Properties</label>
+                    <div class="col-sm-10">
+                      <select name="property" class="custom-select custom-select-md mb-3">
+                        <option selected disabled>Column Name</option>
+                        {% for property in properties %}
+                            <option value="{{property}}">{{property}}</option>
+                        {% endfor %}
+                      </select>
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <label for="classifiers" class="col-sm-2 col-form-label">Classifiers</label>
+                    <div class="col-sm-10">
+                      <select name="classifier" class="custom-select custom-select-md mb-3">
+                        <option selected disabled>Column Name</option>
+                        {% for classifier in classifiers %}
+                            <option value="{{classifier}}">{{classifier}}</option>
+                        {% endfor %}
+                      </select>
+                    </div>
+                  </div>
+                  <input style="margin-top: 10px;" data-toggle="tooltip" data-placement="top" title="Set as the input" type = "submit" class="btn btn-success" value = "Select" name= "setButton" id ='setButton' />
+                  <a style="margin-top: 10px;" class="btn btn-danger" href="/logmanagement/" role="cancelButton">Cancel</a>
+                </form>
+            </div>
+          </div>
+        </div>
+  
+    </div>
+  </div>
+{% endblock %}
